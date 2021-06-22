@@ -21,12 +21,17 @@ for dir_name in dir_names:
         except FileExistsError:
             pass
         # read file
-        file = open(os.path.join(dir_path, file_name))
-        contents = file.read()
-        dictionary = ast.literal_eval(contents)
-        title = dictionary['title']
-        content = dictionary['content']
-        file.close()
+        try:
+            file = open(os.path.join(dir_path, file_name))
+            contents = file.read()
+            #  dictionary = ast.literal_eval(contents)
+            dictionary = json.loads(contents)
+            title = dictionary['title']
+            content = dictionary['content']
+            file.close()
+        except:
+            print('error:', dir_name, file_name)
+            sys.exit()
         # segmentation for title
         file_path_json = os.path.join('/segmentation/news/title/' + dir_name, file_name.replace('.txt', '.json'))
         if not os.path.isfile(file_path_json):
@@ -34,8 +39,6 @@ for dir_name in dir_names:
             with open(file_path_json, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
             print('.', end='', flush=True)
-        else:
-            print('^', end='', flush=True)
         # segmentation for content
         file_path_json = os.path.join('/segmentation/news/content/' + dir_name, file_name.replace('.txt', '.json'))
         if not os.path.isfile(file_path_json):
@@ -43,8 +46,6 @@ for dir_name in dir_names:
             with open(file_path_json, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=4)
             print('.', end='', flush=True)
-        else:
-            print('^', end='', flush=True)
     print('| finish', dir_name)
 
 print('finish all the directories')
