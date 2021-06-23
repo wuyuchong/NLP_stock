@@ -11,16 +11,16 @@ import os
 HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_SMALL_ZH)
 large_files = []
 
-dir_names = [f for f in os.listdir('/data/news/') if not os.path.isfile(os.path.join('/data/news/', f))]
+dir_names = [f for f in os.listdir('/data/wemedia/') if not os.path.isfile(os.path.join('/data/wemedia/', f))]
 for dir_name in dir_names:
     print('| start', dir_name)
-    dir_path = os.path.join('/data/news/', dir_name)
+    dir_path = os.path.join('/data/wemedia/', dir_name)
     file_names = os.listdir(dir_path)
     for file_name in file_names:
         # mkdir
         try:
-            os.makedirs("/segmentation/news/title/" + dir_name)
-            os.makedirs("/segmentation/news/content/" + dir_name)
+            os.makedirs("/segmentation/wemedia/title/" + dir_name)
+            os.makedirs("/segmentation/wemedia/content/" + dir_name)
         except FileExistsError:
             pass
         # file size filter
@@ -42,14 +42,14 @@ for dir_name in dir_names:
         # segmentation
         try:
             # segmentation for title
-            file_path_json = os.path.join('/segmentation/news/title/' + dir_name, file_name.replace('.txt', '.json'))
+            file_path_json = os.path.join('/segmentation/wemedia/title/' + dir_name, file_name.replace('.txt', '.json'))
             if not os.path.isfile(file_path_json):
                 data = HanLP(title, tasks=['tok/fine', 'tok/coarse'])
                 with open(file_path_json, 'w', encoding='utf-8') as f:
                     json.dump(data, f, ensure_ascii=False, indent=4)
                 print('.', end='', flush=True)
             # segmentation for content
-            file_path_json = os.path.join('/segmentation/news/content/' + dir_name, file_name.replace('.txt', '.json'))
+            file_path_json = os.path.join('/segmentation/wemedia/content/' + dir_name, file_name.replace('.txt', '.json'))
             if not os.path.isfile(file_path_json):
                 data = HanLP(content, tasks=['tok/fine', 'tok/coarse'])
                 with open(file_path_json, 'w', encoding='utf-8') as f:
@@ -59,7 +59,7 @@ for dir_name in dir_names:
             print('error:', dir_name, file_name)
             sys.exit()
     print('| finish', dir_name)
-    pd.DataFrame(large_files, columns=['dir_name', 'file_name']).to_csv('/segmentation/large_files.csv')
+    pd.DataFrame(large_files, columns=['dir_name', 'file_name']).to_csv('/segmentation/wemedia/large_files.csv')
 
 print('finish all the directories')
 print('large files > 10000 omitted')
