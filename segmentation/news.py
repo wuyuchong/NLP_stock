@@ -12,7 +12,7 @@ HanLP = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTR
 large_files = []
 
 dir_names = [f for f in os.listdir('/data/news/') if not os.path.isfile(os.path.join('/data/news/', f))]
-for dir_name in dir_names:
+for ir_name in ir_names:
     print('| start', dir_name)
     dir_path = os.path.join('/data/news/', dir_name)
     file_names = os.listdir(dir_path)
