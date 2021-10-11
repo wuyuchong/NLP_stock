@@ -1,0 +1,1 @@
+First, it’s just another transformation: it transforms vectors from one space to another. Second, the benefit of LSI is that enables identifying patterns and relationships between terms (in our case, words in a document) and topics. Our LSI space is two-dimensional (num_topics = 2) so there are two topics, but this is arbitrary. 

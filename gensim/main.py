@@ -1,78 +1,38 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys
-import os
-import json
 import gensim
-import pandas
-
 from src.get_stoplists import get_stoplists
+from src.get_dictionary import get_dictionary
+from src.get_corpus import get_corpus
+from src.get_sim_file_name import get_sim_file_name
+from src.print_document import print_document
 
+# set directory
+seg_dir = '/segmentation/wemedia/content/BTI/'
+data_dir = '/data/wemedia/BTI/'
+
+# load stoplists
 stoplists = get_stoplists()
 
-# dictionary
-dictionary = gensim.corpora.Dictionary([])
-file_names = os.listdir('/segmentation/wemedia/content/BTI/')
-for file_name in file_names:
-    fileload = open('/segmentation/wemedia/content/BTI/' + file_name)
-    data_all = json.load(fileload)
-    fileload.close()
-    dat = [c for c in data_all['tok/fine'] if c not in stoplists]
-    dictionary.add_documents([dat])
+# init dictionary
+dictionary = get_dictionary(seg_dir, stoplists)
 
-# corpus: memory not friendly
-corpus = list()
-for file_name in file_names:
-    fileload = open('/segmentation/wemedia/content/BTI/' + file_name)
-    data_all = json.load(fileload)
-    fileload.close()
-    dat = [c for c in data_all['tok/fine'] if c not in stoplists]
-    corpus.append(dictionary.doc2bow(dat))
+# build corpus
+corpus = get_corpus(seg_dir, stoplists, dictionary)
 
-# corpus: memeory friendly
-#  class MyCorpus:
-    #  def __iter__(self):
-        #  file_names = os.listdir('/segmentation/wemedia/content/BTI/')
-        #  for file_name in file_names:
-            #  fileload = open('/segmentation/wemedia/content/BTI/' + file_name)
-            #  data_all = json.load(fileload)
-            #  fileload.close()
-            #  dat = [c for c in data_all['tok/fine'] if c not in stoplists]
-            #  yield dictionary.doc2bow(dat)
-#  corpus = MyCorpus()
-
+# construct Lsimodel
 lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=2)
 
-fileload = open('/segmentation/wemedia/content/BTI/005ad181a39dd3fe62f0d60f6c713891.json')
-data_all = json.load(fileload)
-fileload.close()
-doc = [c for c in data_all['tok/fine'] if c not in stoplists]
-vec_bow = dictionary.doc2bow(doc)
+# set test file
+file_name = '005ad181a39dd3fe62f0d60f6c713891'
 
-vec_lsi = lsi[vec_bow]  # convert the query to LSI space
-index = gensim.similarities.MatrixSimilarity(lsi[corpus])  # transform corpus to LSI space and index it
-sims = index[vec_lsi]  # perform a similarity query against the corpus
+# get similar file name
+sim_file_name = get_sim_file_name(1, seg_dir, stoplists, dictionary, corpus, lsi, file_name)
 
-sims = sorted(enumerate(sims), key=lambda item: -item[1])
+# print content of test file
+print_document(data_dir, file_name)
 
-file_name_txt = file_names[sims[1][0]].replace('.json', '.txt')
+# print content of similar file
+print_document(data_dir, sim_file_name)
 
-f = open('/data/wemedia/BTI/' + file_name_txt)
-contents = f.read()
-dictionary = json.loads(contents)
-content = dictionary['content']
-f.close()
-print(content)
-
-print('----------------')
-
-f = open('/data/wemedia/BTI/005ad181a39dd3fe62f0d60f6c713891.txt')
-contents = f.read()
-dictionary = json.loads(contents)
-content = dictionary['content']
-f.close()
-print(content)
-
-#  for doc_position, doc_score in sims[0:3]:
-    #  print(doc_score, file_names[doc_position])
