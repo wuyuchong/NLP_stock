@@ -13,6 +13,7 @@ def get_dictionary(seg_dir, stoplists):
         fileload = open(seg_dir + file_name)
         data_all = json.load(fileload)
         fileload.close()
-        dat = [c for c in data_all['tok/fine'] if c not in stoplists]
+        if 'tok/fine' in data_all.keys():
+            dat = [c for c in data_all.get('tok/fine') if c not in stoplists]
         dictionary.add_documents([dat])
     return dictionary

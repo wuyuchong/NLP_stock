@@ -12,6 +12,7 @@ def get_corpus(seg_dir, stoplists, dictionary):
         fileload = open(seg_dir + file_name)
         data_all = json.load(fileload)
         fileload.close()
-        dat = [c for c in data_all['tok/fine'] if c not in stoplists]
+        if 'tok/fine' in data_all.keys():
+            dat = [c for c in data_all['tok/fine'] if c not in stoplists]
         corpus.append(dictionary.doc2bow(dat))
     return corpus
