@@ -12,10 +12,11 @@ def get_sim_file_name(top_n, seg_dir, stoplists, dictionary, corpus, lsi, file_n
     data_all = json.load(fileload)
     fileload.close()
 
-    if 'tok/fine' not in data_all.keys():
-        return None
+    if 'tok/fine' in data_all.keys():
+        doc = [c for c in data_all.get('tok/fine') if c not in stoplists]
+    else:
+        doc = ['该文本没有内容']
 
-    doc = [c for c in data_all['tok/fine'] if c not in stoplists]
     vec_bow = dictionary.doc2bow(doc)
     vec_lsi = lsi[vec_bow]  # convert the query to LSI space
     index = gensim.similarities.MatrixSimilarity(lsi[corpus])  # transform corpus to LSI space and index it

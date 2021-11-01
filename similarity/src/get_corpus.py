@@ -14,5 +14,7 @@ def get_corpus(seg_dir, stoplists, dictionary):
         fileload.close()
         if 'tok/fine' in data_all.keys():
             dat = [c for c in data_all['tok/fine'] if c not in stoplists]
+        else:
+            dat = ['该文本没有内容']
         corpus.append(dictionary.doc2bow(dat))
     return corpus

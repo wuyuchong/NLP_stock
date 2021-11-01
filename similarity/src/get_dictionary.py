@@ -15,5 +15,7 @@ def get_dictionary(seg_dir, stoplists):
         fileload.close()
         if 'tok/fine' in data_all.keys():
             dat = [c for c in data_all.get('tok/fine') if c not in stoplists]
+        else:
+            dat = ['该文本没有内容']
         dictionary.add_documents([dat])
     return dictionary
