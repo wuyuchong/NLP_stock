@@ -1,41 +1,39 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import gensim
-from src.get_stoplists import get_stoplists
-from src.get_dictionary import get_dictionary
-from src.get_corpus import get_corpus
-from src.get_sim_file_name import get_sim_file_name
-from src.print_document import print_document
+# Don't forget to install BLAS for fast computing
+# apt install libatlas-base-dev
+# install Intel MKL and switch to it:
+# sudo update-alternatives --config libblas.so.3-x86_64-linux-gnu
+# https://csantill.github.io/RPerformanceWBLAS/
 
-# set directory
-seg_dir = '/segmentation/wemedia/content/贵州茅台/'
-data_dir = '/data/wemedia/贵州茅台/'
-#  seg_dir = '/segmentation/wemedia/content/BTI/'
-#  data_dir = '/data/wemedia/BTI/'
+# TODO: memory friendly >> class corpus >> yield
 
-# load stoplists
-stoplists = get_stoplists()
+from src.auto import sim_doc2vec, sim_lsi
 
-# init dictionary
-dictionary = get_dictionary(seg_dir, stoplists)
+# print log or not
+log = False
 
-# build corpus
-corpus = get_corpus(seg_dir, stoplists, dictionary)
-
-# construct Lsimodel
-lsi = gensim.models.LsiModel(corpus, id2word=dictionary, num_topics=2)
-
-# set test file
-input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
+# set type and stock and file
+content_type = 'wemedia'
+#  stock_name = 'BTI'
 #  input_file_name = '005ad181a39dd3fe62f0d60f6c713891'
+stock_name = '贵州茅台'
+input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
 
-# get similar file name
-sim_file_name = get_sim_file_name(1, seg_dir, stoplists, dictionary,
-                                  corpus, lsi, input_file_name)
+# lsi model
+print('start lsi ---------->')
 
-# print content of test file
-print_document(data_dir, input_file_name)
+sim_lsi(content_type, stock_name, input_file_name, num_topics=2, log=log)
 
-# print content of similar file
-print_document(data_dir, sim_file_name)
+print('finish lsi ---------->',
+      'OUTPUT THERE: /similarity/output/.../lsi/....')
+
+# doc2vec model
+print('start doc2vec ---------->')
+
+sim_doc2vec(content_type, stock_name, input_file_name,
+            vector_size=50, min_count=2, epochs=20, log=log)
+
+print('finish doc2vec ---------->',
+      'OUTPUT THERE: /similarity/output/.../doc2vec/....')

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+
 
 #  corpus: memeory friendly
 class MyCorpus:
@@ -12,4 +14,3 @@ class MyCorpus:
             fileload.close()
             dat = [c for c in data_all['tok/fine'] if c not in stoplists]
             yield dictionary.doc2bow(dat)
-corpus = MyCorpus()

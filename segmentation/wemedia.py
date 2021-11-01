@@ -4,7 +4,6 @@
 import pandas as pd
 import hanlp
 import json
-import ast
 import sys
 import os
 
