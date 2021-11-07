@@ -9,31 +9,42 @@
 
 # TODO: memory friendly >> class corpus >> yield
 
-from src.auto import sim_doc2vec, sim_lsi
+from src.auto import train_sim_lsi, use_sim_lsi, new_sim_lsi
+from src.auto import train_sim_doc2vec, use_sim_doc2vec, new_sim_doc2vec
 
 # print log or not
 log = False
 
 # set type and stock and file
 content_type = 'wemedia'
-#  stock_name = 'BTI'
-#  input_file_name = '005ad181a39dd3fe62f0d60f6c713891'
-stock_name = '贵州茅台'
-input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
+input_content = '股市不是很重要的几个公式'
+stock_name = 'BTI'
+input_file_name = '005ad181a39dd3fe62f0d60f6c713891'
+#  stock_name = '贵州茅台'
+#  input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
+#  stock_name = '大消费'
+#  input_file_name = 'c07a4986be45dcd6a4e6b9fa00a947dc'
 
 # lsi model
 print('start lsi ---------->')
-
-sim_lsi(content_type, stock_name, input_file_name, num_topics=2, log=log)
-
-print('finish lsi ---------->',
+train_sim_lsi(content_type, stock_name, num_topics=2, log=log)
+print('train: finish lsi ---------->',
+      'OUTPUT THERE: /similarity/model/.../lsi/....')
+use_sim_lsi(content_type, stock_name, input_file_name, num_topics=2, log=log)
+print('use: finish lsi ---------->',
+      'OUTPUT THERE: /similarity/output/.../lsi/....')
+new_sim_lsi(content_type, stock_name, input_content, num_topics=2, log=log)
+print('new: finish lsi ---------->',
       'OUTPUT THERE: /similarity/output/.../lsi/....')
 
 # doc2vec model
 print('start doc2vec ---------->')
-
-sim_doc2vec(content_type, stock_name, input_file_name,
-            vector_size=50, min_count=2, epochs=20, log=log)
-
-print('finish doc2vec ---------->',
+train_sim_doc2vec(content_type, stock_name, vector_size=50, min_count=2, epochs=20, log=log)
+print('train: finish doc2vec ---------->',
+      'OUTPUT THERE: /similarity/model/.../doc2vec/....')
+use_sim_doc2vec(content_type, stock_name, input_file_name, vector_size=50, min_count=2, epochs=20, log=log)
+print('use: finish doc2vec ---------->',
+      'OUTPUT THERE: /similarity/output/.../doc2vec/....')
+new_sim_doc2vec(content_type, stock_name, input_content, vector_size=50, min_count=2, epochs=20, log=log)
+print('new: finish doc2vec ---------->',
       'OUTPUT THERE: /similarity/output/.../doc2vec/....')

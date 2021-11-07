@@ -36,17 +36,39 @@ def check_model_health(train_corpus, model):
     return counter
 
 
-def sim_label_file_names(train_corpus, model, input_file_name,
-                         seg_dir, config=False):
+def sim_label_file_names(model, input_file_name,
+                         seg_dir, stoplists, config=False):
     file_names_json = os.listdir(seg_dir)
-    doc_id = file_names_json.index(input_file_name + '.json')
-    inferred_vector = model.infer_vector(train_corpus[doc_id].words)
+    fileload = open(seg_dir + input_file_name + '.json')
+    data_all = json.load(fileload)
+    fileload.close()
+
+    if 'tok/fine' in data_all.keys():
+        doc = [c for c in data_all.get('tok/fine') if c not in stoplists]
+    else:
+        doc = ['该文本没有内容']
+
+    inferred_vector = model.infer_vector(doc)
     sims = model.dv.most_similar([inferred_vector], topn=len(model.dv))
     if not config:
         config = [('MOST', 0), ('SECOND-MOST', 1), ('MEDIAN', len(sims)//2),
                   ('LEAST', len(sims) - 1)]
     outcome = list()
     outcome.append(('INPUT', input_file_name))
+    for label, index in config:
+        outcome.append((label,
+                        file_names_json[sims[index][0]].replace('.json', '')))
+    return outcome
+
+
+def new_sim_label_file_names(model, input_words_list, seg_dir, config=False):
+    file_names_json = os.listdir(seg_dir)
+    inferred_vector = model.infer_vector(input_words_list)
+    sims = model.dv.most_similar([inferred_vector], topn=len(model.dv))
+    if not config:
+        config = [('MOST', 0), ('SECOND-MOST', 1), ('MEDIAN', len(sims)//2),
+                  ('LEAST', len(sims) - 1)]
+    outcome = list()
     for label, index in config:
         outcome.append((label,
                         file_names_json[sims[index][0]].replace('.json', '')))

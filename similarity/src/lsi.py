@@ -61,3 +61,22 @@ def sim_label_file_names(seg_dir, stoplists, dictionary, corpus, lsi,
         outcome.append((label,
                         file_names_json[sims[index][0]].replace('.json', '')))
     return outcome
+
+
+def new_sim_label_file_names(seg_dir, dictionary, corpus, lsi,
+                             input_words_list, config=False):
+    file_names_json = os.listdir(seg_dir)
+    vec_bow = dictionary.doc2bow(input_words_list)
+    vec_lsi = lsi[vec_bow]  # convert the query to LSI space
+    # transform corpus to LSI space and index it
+    index = gensim.similarities.MatrixSimilarity(lsi[corpus])
+    sims = index[vec_lsi]  # perform a similarity query against the corpus
+    sims = sorted(enumerate(sims), key=lambda item: -item[1])
+    if not config:
+        config = [('MOST', 0), ('SECOND-MOST', 1), ('MEDIAN', len(sims)//2),
+                  ('LEAST', len(sims) - 1)]
+    outcome = list()
+    for label, index in config:
+        outcome.append((label,
+                        file_names_json[sims[index][0]].replace('.json', '')))
+    return outcome
