@@ -50,7 +50,7 @@ def write_json(content_type, stock_name, model_type,
         json.dump(outcome, f, ensure_ascii=False, indent=4)
 
 
-def new_write_json(content_type, stock_name, model_type, sim_label_file_names):
+def query_write_json(content_type, stock_name, model_type, sim_label_file_names):
     data_dir = '/data/' + content_type + '/' + stock_name + '/'
     outcome = dict()
     for label, file_name in sim_label_file_names:
@@ -63,9 +63,17 @@ def new_write_json(content_type, stock_name, model_type, sim_label_file_names):
         pass
     # write json
     write_dir = '/similarity/output/' + content_type + '/' + stock_name \
-        + '/' + model_type + '/new.json'
+        + '/' + model_type + '/query.json'
     with open(write_dir, 'w+', encoding='utf-8') as f:
         json.dump(outcome, f, ensure_ascii=False, indent=4)
+
+
+def outcome(content_type, stock_name, sim_label_file_names):
+    data_dir = '/data/' + content_type + '/' + stock_name + '/'
+    outcome = dict()
+    for label, file_name in sim_label_file_names:
+        outcome[label] = get_document_content(data_dir, file_name)
+    return outcome
 
 
 def segment_process(input_content, stoplists, task='tok/fine'):

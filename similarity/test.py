@@ -9,8 +9,8 @@
 
 # TODO: memory friendly >> class corpus >> yield
 
-from src.auto import train_sim_lsi, use_sim_lsi, new_sim_lsi
-from src.auto import train_sim_doc2vec, use_sim_doc2vec, new_sim_doc2vec
+from src.auto import train_sim_lsi, query_sim_lsi
+from src.auto import train_sim_doc2vec, query_sim_doc2vec
 
 # print log or not
 log = False
@@ -30,11 +30,8 @@ print('start lsi ---------->')
 train_sim_lsi(content_type, stock_name, num_topics=2, log=log)
 print('train: finish lsi ---------->',
       'OUTPUT THERE: /similarity/model/.../lsi/....')
-use_sim_lsi(content_type, stock_name, input_file_name, num_topics=2, log=log)
-print('use: finish lsi ---------->',
-      'OUTPUT THERE: /similarity/output/.../lsi/....')
-new_sim_lsi(content_type, stock_name, input_content, num_topics=2, log=log)
-print('new: finish lsi ---------->',
+query_sim_lsi(content_type, stock_name, input_content, num_topics=2, log=log)
+print('query: finish lsi ---------->',
       'OUTPUT THERE: /similarity/output/.../lsi/....')
 
 # doc2vec model
@@ -42,9 +39,6 @@ print('start doc2vec ---------->')
 train_sim_doc2vec(content_type, stock_name, vector_size=50, min_count=2, epochs=20, log=log)
 print('train: finish doc2vec ---------->',
       'OUTPUT THERE: /similarity/model/.../doc2vec/....')
-use_sim_doc2vec(content_type, stock_name, input_file_name, vector_size=50, min_count=2, epochs=20, log=log)
-print('use: finish doc2vec ---------->',
-      'OUTPUT THERE: /similarity/output/.../doc2vec/....')
-new_sim_doc2vec(content_type, stock_name, input_content, vector_size=50, min_count=2, epochs=20, log=log)
-print('new: finish doc2vec ---------->',
+query_sim_doc2vec(content_type, stock_name, input_content, vector_size=50, min_count=2, epochs=20, log=log)
+print('query: finish doc2vec ---------->',
       'OUTPUT THERE: /similarity/output/.../doc2vec/....')

@@ -63,7 +63,7 @@ def sim_label_file_names(seg_dir, stoplists, dictionary, corpus, lsi,
     return outcome
 
 
-def new_sim_label_file_names(seg_dir, dictionary, corpus, lsi,
+def query_sim_label_file_names(seg_dir, dictionary, corpus, lsi,
                              input_words_list, config=False):
     file_names_json = os.listdir(seg_dir)
     vec_bow = dictionary.doc2bow(input_words_list)

@@ -61,7 +61,7 @@ def sim_label_file_names(model, input_file_name,
     return outcome
 
 
-def new_sim_label_file_names(model, input_words_list, seg_dir, config=False):
+def query_sim_label_file_names(model, input_words_list, seg_dir, config=False):
     file_names_json = os.listdir(seg_dir)
     inferred_vector = model.infer_vector(input_words_list)
     sims = model.dv.most_similar([inferred_vector], topn=len(model.dv))
