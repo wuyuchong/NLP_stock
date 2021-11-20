@@ -18,10 +18,10 @@ log = False
 # set type and stock and file
 content_type = 'wemedia'
 input_content = '股市不是很重要的几个公式'
-stock_name = 'BTI'
-input_file_name = '005ad181a39dd3fe62f0d60f6c713891'
-#  stock_name = '贵州茅台'
-#  input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
+#  stock_name = 'BTI'
+#  input_file_name = '005ad181a39dd3fe62f0d60f6c713891'
+stock_name = '贵州茅台'
+input_file_name = 'ZWTw7mQBCy8qJGFB-iAo'
 #  stock_name = '大消费'
 #  input_file_name = 'c07a4986be45dcd6a4e6b9fa00a947dc'
 

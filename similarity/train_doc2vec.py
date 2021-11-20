@@ -20,8 +20,13 @@ while True:
         f = open(submit_dir + task)
         arguments = json.load(f)
         f.close()
+        print(arguments)
         os.remove(submit_dir + task)
         print('start --------> ', task)
-        train_sim_doc2vec(**arguments)
+        try:
+            train_sim_doc2vec(**arguments)
+        except:
+            print('error here')
+            continue
         print('finish --------> ', task)
     time.sleep(3)

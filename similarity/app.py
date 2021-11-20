@@ -35,25 +35,30 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 # -----------------> layout
 app.layout = html.Div(children=[
     html.H1(children='股市新闻及评论文本相似查询及训练平台'),
-    html.Div(children='版权归马景义课题组所有，项目地址: https://github.com/ResearchJM/nlp_stock'),
     html.Div(children=[
+        html.Hr(),
         html.H2(children='选择内容'),
         dcc.Dropdown(id='content_type', options=[
             {'label': '文章', 'value': 'wemedia'},
             {'label': '新闻', 'value': 'news'},
         ], placeholder='选择文本类型'),
         dcc.Dropdown(id='stock_list', placeholder='选择股票名称'),
+        html.Hr(),
         html.H2(children='选择模型'),
         dcc.Dropdown(id='model_type', placeholder='选择模型类型'),
         dcc.Dropdown(id='model_list', placeholder='选择模型参数'),
-        html.H2(children='实时查询'),
+        html.Hr(),
+        html.H2(children='查询相似'),
         dcc.Input(id='input_content', type='text', placeholder='输入查询文本',
                   style={'width': '100%'}),
         html.Br(),
         html.Button(id='start_query', n_clicks=0, children='开始查询'),
         html.Div(id='prompt'),
-        html.Br(),
+        html.Hr(),
         html.H2(children='模型训练'),
+        html.Br(),
+        html.Div(children='模型提交后排队依次完成，未来版本将支持多线程同时训练'),
+        html.Br(),
         html.Div(children=[
             html.H3(children='LSI 模型'),
             html.Br(),
@@ -80,6 +85,12 @@ app.layout = html.Div(children=[
         ], style={'width': '50%', 'float': 'right', 'display':'inline-block'}),
     ], style={'width': '40%', 'float': 'left', 'display':'inline-block'}),
     html.Div(children=[
+        html.Hr(),
+        html.Div(children='版权归马景义课题组所有'),
+        html.Div(children='项目代码量：1950 行，文本库大小：34 GB'),
+        html.Div(children='项目 github 地址: https://github.com/wuyuchong/nlp_stock'),
+        html.Div(children='有问题请反馈至 email@wuyuchong.com'),
+        html.Hr(),
         dcc.Tabs(id="tabs", value='MOST', children=[
             dcc.Tab(label='最相似', value='MOST', children=[
                 html.Div(id='MOST')]),
@@ -151,7 +162,7 @@ def update_output(n_clicks):
               State('stock_list', 'value'),
               State('input_content', 'value'))
 def update_output(n_clicks, content_type, model_type, model_token, stock_name, input_content):
-    if n_clicks == 0 or input_content == '':
+    if n_clicks == 0 or input_content == '' or not input_content:
         return (('', ) * 4)
     try:
         if model_type == 'lsi':
@@ -176,6 +187,12 @@ def update_output(n_clicks, content_type, stock_name, num_topics):
         return ''
     if n_clicks >= 4:
         return '请求被驳回，请勿同时训练过多模型'
+    if not num_topics:
+        return '请先输入模型参数'
+    if not content_type:
+        return '请先选择文本类型'
+    if not stock_name:
+        return '请先选择股票名称'
     submit_train_lsi(content_type, stock_name, num_topics)
     return u'''已提交到后台进行训练，内容类型：{}，股票名称：{}，主题个数：{}, 
         请勿重复提交相同的模型。
@@ -196,6 +213,12 @@ def update_output(n_clicks, content_type, stock_name, vector_size, min_count, ep
         return ''
     if n_clicks >= 4:
         return '请求被驳回，请勿同时训练过多模型'
+    if not vector_size or not min_count or not epochs:
+        return '请先输入模型参数'
+    if not content_type:
+        return '请先选择文本类型'
+    if not stock_name:
+        return '请先选择股票名称'
     submit_train_doc2vec(content_type, stock_name, vector_size=vector_size, min_count=min_count, epochs=epochs)
     return u'''已提交到后台进行训练，内容类型：{}，股票名称：{}，向量维度：{}，最小词频率：{}，迭代次数：{}。
         请勿重复提交相同的模型。
@@ -204,4 +227,4 @@ def update_output(n_clicks, content_type, stock_name, vector_size, min_count, ep
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0')
+    app.run_server(debug=False, host='0.0.0.0')
