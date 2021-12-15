@@ -86,10 +86,10 @@ app.layout = html.Div(children=[
     ], style={'width': '40%', 'float': 'left', 'display':'inline-block'}),
     html.Div(children=[
         html.Hr(),
-        html.Div(children='版权归马景义课题组所有'),
+        html.Div(children='©️ 版权归马景义课题组所有'),
         html.Div(children='项目代码量：1950 行，文本库大小：34 GB'),
         html.Div(children='项目 github 地址: https://github.com/wuyuchong/nlp_stock'),
-        html.Div(children='有问题请反馈至 email@wuyuchong.com'),
+        html.Div(children='运行报错请反馈至 email@wuyuchong.com'),
         html.Hr(),
         dcc.Tabs(id="tabs", value='MOST', children=[
             dcc.Tab(label='最相似', value='MOST', children=[
